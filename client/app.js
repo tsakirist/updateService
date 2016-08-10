@@ -1,26 +1,22 @@
 'use strict';
 
-const http = require('http');
-let body = "";
-
 const options = {
     host : 'localhost',
     port : 3000,
-    path : '/checkVersion',
     method : 'GET'
 };
+const request = require('./request/request');
+let body = '';
 
-http.request(options, (res) => {
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => {
-        myFun(chunk);
-    });
-    res.on('end', () => {
-        console.log('Request has ended.');
-    });
-}).end();
-
-function myFun(data) {
+request.getVersion(options).then((data) => {
     body = data;
-    console.log('Last version is', body);
-}
+    console.log("Version:",body);
+}, (err) => {
+    console.log('Error:', err);
+});
+
+request.getFile(options).then((data) => {
+    console.log('File:', data);
+}, (err) => {
+    console.log(err);
+});
