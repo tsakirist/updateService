@@ -1,10 +1,6 @@
 'use strict';
 
-const options = {
-    host : 'localhost',
-    port : 3000,
-    method : 'GET'
-};
+const options = require('./config/config.json');
 const request = require('./request/request');
 let body = '';
 
@@ -16,7 +12,8 @@ request.getVersion(options).then((data) => {
 });
 
 request.getFile(options).then((data) => {
-    console.log('File:', data);
+    console.log('File:', body);
+    console.log(data);
 }, (err) => {
     console.log(err);
 });
