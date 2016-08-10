@@ -17,8 +17,8 @@ request.getVersion(httpOptions).then((serverVersion) => {
     console.log('Error:', err);
 });
 
-// request.getFile(httpOptions).then((data) => {
-//
-// }, (err) => {
-//     console.log(err);
-// });
+request.getFile(httpOptions).then((data) => {
+    console.log('File contents:', data);
+}, (err) => {
+    console.log(err);
+});

@@ -6,11 +6,11 @@ const bundlePath = config.bundlePath;
 
 /** Function getLastVersion
  *  returns the last version of the file
- *  @returns {String} name of the file
+ * @returns {{name: string, version: string}}
  */
 function getLastVersion() {
     const files = fs.readdirSync(bundlePath);
-    return files[files.length-1].split('_')[1].slice(0, -4);
+    return {name: files[files.length-1], version: files[files.length-1].split('_')[1].slice(0, -4)};
 }
 
 /** Function getFile
@@ -18,8 +18,8 @@ function getLastVersion() {
  *  @returns {String} contents of the file
  */
 function getFile() {
-    const version = getLastVersion();
-    return fs.readFileSync(bundlePath + `/${version}`, 'utf-8');
+    const name = getLastVersion().name;
+    return fs.readFileSync(bundlePath + `/${name}`, 'utf-8');
 }
 
 module.exports = {

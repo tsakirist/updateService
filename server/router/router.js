@@ -5,9 +5,9 @@ const router = express.Router();
 const fileChecker = require('../checker/filechecker');
 
 router.get('/checkVersion', (req, res) => {
-    const version = fileChecker.getLastVersion();
-    console.log(version);
-    res.send(version);
+    const data = fileChecker.getLastVersion();
+    console.log(data);
+    res.send(data.version);
 });
 
 router.get('/getLastVersion', (req, res) => {
