@@ -1,9 +1,0 @@
-{
-	"options": {
-		"host": "localhost",
-		"port": 3000,
-		"method": "GET"
-	},
-	"filePath": "/home/stathis/Documents/WebStorm Projects/updateService/client/dummy/",
-	"version": "v1.4"
-}

@@ -1,12 +1,13 @@
 'use strict';
 
 const execFile = require('child_process').execFile;
-const config = require('./config/config.json');
 const request = require('./services/request');
 const fileHandler = require('./services/filehandler');
-const httpOptions = config.options;
-const filePath = config.filePath;
-const currentVersion = config.version;
+const httpOptions = require('./config/http.json');
+const fileOptions = require('./config/file.json');
+const filePath = fileOptions.path;
+const currentVersion = fileOptions.version;
+
 
 //TODO check version on boot , execFile node app and also tar and also npm install and run app, interval like 1min to check for version
 
