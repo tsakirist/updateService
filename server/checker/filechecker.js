@@ -6,7 +6,7 @@ const bundlePath = config.bundlePath;
 
 /** Function getLastVersion
  *  returns the last version of the file
- * @returns {{name: string, version: string}}
+ *  @returns {{name: string, version: string}}
  */
 function getLastVersion() {
     const files = fs.readdirSync(bundlePath);

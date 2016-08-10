@@ -4,8 +4,8 @@ const http = require('http');
 
 /** Function httpGet
  *  makes http services to the server endpoints
- * @param options
- * @returns {Promise}
+ *  @param options
+ *  @returns {Promise}
  */
 function httpGet(options) {
     return new Promise((resolve, reject) => {
@@ -28,8 +28,8 @@ function httpGet(options) {
 /** Function getVersion
  *  makes http services to the endpoint /checkVersion
  *  to get the last version of the file
- * @param options
- * @returns {Promise}
+ *   @param options
+ *  @returns {Promise}
  */
 function getVersion(options) {
     options.path = '/checkVersion';
@@ -38,8 +38,8 @@ function getVersion(options) {
 /** Function getFile
  *  makes http services to the endpoint /getLastVersion
  *  to get the contents of the file
- * @param options
- * @returns {Promise}
+ *  @param options
+ *  @returns {Promise}
  */
 function getFile(options) {
     options.path = '/getLastVersion';

@@ -2,26 +2,34 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../config/file.json');
+const fileOptions = require('../config/file.json');
 
-function checkVersion(filePath, currentVersion, serverVersion) {
+/** Function checkVersion
+ *  compares the versions of the file
+ *  @param serverVersion
+ *  @returns {boolean}
+ */
+function checkVersion(serverVersion) {
     console.log('Inside filehandler..');
-    console.log('Filepath:', filePath);
-    console.log('Current version:', currentVersion);
+    console.log('Current version:', fileOptions.version);
     console.log('Server version:', serverVersion);
-    // if(currentVersion != serverVersion) {
-    //     return false;
-    // }
-    updateVersion(serverVersion);
+    if(fileOptions.version != serverVersion) {
+        updateVersion(serverVersion);
+        return false;
+    }
     return true;
 }
 
 //TODO need to update http.json with new version , and also write contents of new file untar execute..
 
+/** Function updateVersion
+ *  updates the config/file.json with the newer version of the file
+ *  @param version
+ */
 function updateVersion(version) {
-    console.log('Updating http.json version to', version);
-    config.version = version;
-    fs.writeFileSync('config/config2.json', JSON.stringify(config, null, 2));
+    console.log('Updating file.json version to', version);
+    fileOptions.version = version;
+    fs.writeFileSync('config/config2.json', JSON.stringify(fileOptions, null, 2));
 }
 
 module.exports = {
