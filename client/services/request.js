@@ -3,7 +3,7 @@
 const http = require('http');
 
 /** Function httpGet
- *  makes http request to the server endpoints
+ *  makes http services to the server endpoints
  * @param options
  * @returns {Promise}
  */
@@ -26,7 +26,7 @@ function httpGet(options) {
 }
 
 /** Function getVersion
- *  makes http request to the endpoint /checkVersion
+ *  makes http services to the endpoint /checkVersion
  *  to get the last version of the file
  * @param options
  * @returns {Promise}
@@ -36,7 +36,7 @@ function getVersion(options) {
     return httpGet(options);
 }
 /** Function getFile
- *  makes http request to the endpoint /getLastVersion
+ *  makes http services to the endpoint /getLastVersion
  *  to get the contents of the file
  * @param options
  * @returns {Promise}

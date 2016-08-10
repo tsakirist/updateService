@@ -10,7 +10,7 @@ const bundlePath = config.bundlePath;
  */
 function getLastVersion() {
     const files = fs.readdirSync(bundlePath);
-    return files[files.length-1];
+    return files[files.length-1].split('_')[1].slice(0, -4);
 }
 
 /** Function getFile
