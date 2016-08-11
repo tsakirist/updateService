@@ -1,6 +1,7 @@
 'use strict';
 
 const http = require('http');
+const fs = require('fs');
 
 /** Function httpGet
  *  makes http services to the server endpoints
@@ -9,21 +10,25 @@ const http = require('http');
  */
 function httpGet(options) {
     return new Promise((resolve, reject) => {
-        http.request(options, (res) => {
+        const req = http.request(options, (res) => {
             if(res.statusCode < 200 || res.statusCode > 299) {
-                reject('Error has occurred ' + res.statusCode);
+                return reject('Error has occurred ' + res.statusCode);
             }
-            res.setEncoding('utf8');
-            let data = {};
-            res.on('data', (chunk) => {
-                // data.push(chunk);
-                data = chunk;
-            });
-            res.on('end', () => {
-                // resolve(data.join(''));
-                resolve(data);
-            });
-        }).end();
+            //  res.setEncoding('utf8');
+            // let data = Buffer.alloc(0);
+            // res.on('data', (chunk) => {
+            //     data = Buffer.concat([data, chunk], data.length + chunk.length);
+            // });
+            // res.on('end', () => {
+            //     //resolve(JSON.parse(data.join('')));
+            //     data
+            // });
+            const tempBundle = fs.createWriteStream('tempBundle.tar.gz');
+            res.pipe(tempBundle);
+
+        });
+        req.on('error', err => reject(err));
+        req.end();
     });
 }
 
@@ -45,6 +50,13 @@ function getVersion(options) {
  */
 function getFile(options) {
     options.path = '/getFile';
+    // options.headers = {
+    //     accept: '*/*',
+    //     'accept-encoding': 'gzip, deflate, sdch',
+    //     connection: 'keep-alive',
+    //     'cache-control': 'no-cache',
+    //     'accept-language': 'en-US,en;q=0.8'
+    // };
     return httpGet(options);
 }
 

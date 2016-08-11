@@ -8,7 +8,7 @@ const httpOptions = require('./config/http.json');
 //TODO if false then untar install and exec , NEED to create functions in filehandler
 
 // request.getVersion(httpOptions).then((serverFile) => {
-//     serverFile = JSON.parse(serverFile);
+//     // serverFile = JSON.parse(serverFile);
 //     const flag = fileHandler.checkVersion(serverFile.version);
 //     console.log(`Inside app..\nVersions match? ${flag ? 'YES' : 'NO'}`);
 //     if(!flag) {
@@ -23,11 +23,11 @@ const httpOptions = require('./config/http.json');
 // });
 
 request.getFile(httpOptions).then((data) => {
-    data = JSON.parse(data);
-    data.data = new Buffer(data.data);
-    fileHandler.writeFile(data.name, data.data);
-    fileHandler.processFile(data.name);
-    // console.log(data);
+    console.log(data);
+    // data.data = new Buffer(data.data);
+    // fileHandler.writeFile(data.name, data.data);
+    // fileHandler.processFile(data.name);
+    // // console.log(data);
     // fileHandler.writeFile(data.name , data.data);
     // fileHandler.processFile(data.name);
 }, (err) => {
