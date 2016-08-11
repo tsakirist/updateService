@@ -1,5 +1,6 @@
 'use strict';
 
+const execFile = require('child_process').execFile;
 const fs = require('fs');
 const path = require('path');
 const fileOptions = require('../config/file.json');
@@ -14,10 +15,15 @@ function checkVersion(serverVersion) {
     console.log('Current version:', fileOptions.version);
     console.log('Server version:', serverVersion);
     if(fileOptions.version != serverVersion) {
-        updateVersion(serverVersion);
+        // updateVersion(serverVersion);
         return false;
     }
     return true;
+}
+
+function writeFile(name , data) {
+    console.log(name);
+    fs.writeFileSync(name, data);
 }
 
 //TODO need to update http.json with new version , and also write contents of new file untar execute..
@@ -32,6 +38,26 @@ function updateVersion(version) {
     fs.writeFileSync('config/config2.json', JSON.stringify(fileOptions, null, 2));
 }
 
+function processFile(fileName) {
+    execFile('tar', ['xvf', `${fileName}`, '-C', 'dummy/'], (err) => {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            execFile('npm', ['install', '--save', '--prefix', 'dummy/'], (err) => {
+                if(err) {
+                    console.log(err);
+                }
+                else {
+                    console.log("Job is done!");
+                }
+            })
+        }
+    });
+}
+
 module.exports = {
-    checkVersion : checkVersion
+    checkVersion : checkVersion,
+    processFile : processFile,
+    writeFile : writeFile
 };

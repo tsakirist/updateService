@@ -10,16 +10,17 @@ const bundlePath = config.bundlePath;
  */
 function getLastVersion() {
     const files = fs.readdirSync(bundlePath);
-    return {name: files[files.length-1], version: files[files.length-1].split('_')[1].slice(0, -4)};
+    return {name: files[files.length-1], version: files[files.length-1].split('_')[1].slice(0, -7)};
 }
 
-/** Function getFile
+/**
+ * Function getFile
  *  returns the contents of the last version of the file
- *  @returns {String} contents of the file
+ * @returns {{name: *, data}}
  */
 function getFile() {
     const name = getLastVersion().name;
-    return fs.readFileSync(bundlePath + `/${name}`, 'utf-8');
+    return {name: name, data: fs.readFileSync(bundlePath + `/${name}`, 'utf-8')};
 }
 
 module.exports = {

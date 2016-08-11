@@ -5,7 +5,7 @@ const http = require('http');
 /** Function httpGet
  *  makes http services to the server endpoints
  *  @param options
- *  @returns {Promise}
+ *  @returns {Promise} with JSON data
  */
 function httpGet(options) {
     return new Promise((resolve, reject) => {
@@ -19,7 +19,7 @@ function httpGet(options) {
                 data.push(chunk);
             });
             res.on('end', () => {
-                resolve(data.join(''));
+                resolve(JSON.parse(data.join('')));
             });
         }).end();
     });
@@ -42,7 +42,7 @@ function getVersion(options) {
  *  @returns {Promise}
  */
 function getFile(options) {
-    options.path = '/getLastVersion';
+    options.path = '/getFile';
     return httpGet(options);
 }
 

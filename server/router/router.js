@@ -7,10 +7,10 @@ const fileChecker = require('../checker/filechecker');
 router.get('/checkVersion', (req, res) => {
     const data = fileChecker.getLastVersion();
     console.log(data);
-    res.send(data.version);
+    res.json(data);
 });
 
-router.get('/getLastVersion', (req, res) => {
+router.get('/getFile', (req, res) => {
     res.send(fileChecker.getFile());
 });
 
