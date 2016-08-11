@@ -28,21 +28,4 @@ router.get('/file', (req, res) => {
     res.download(path);
 });
 
-// 'use strict';
-//
-// const express = require('express');
-// const router = express.Router();
-// const fileChecker = require('./filehandler');
-//
-// router.get('/checkVersion', (req, res) => {
-//     const data = fileChecker.getLastVersion();
-//     console.log(data);
-//     res.json(data);
-// });
-//
-// router.get('/getFile', (req, res) => {
-//     // res.set('Content-Type', 'application/x-gzip');
-//     res.send(fileChecker.getFile());
-// });
-//
-// module.exports = router;
+module.exports = router;
