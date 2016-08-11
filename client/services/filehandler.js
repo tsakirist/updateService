@@ -44,12 +44,17 @@ function processFile(fileName) {
             console.log(err);
         }
         else {
+            console.log('File extracted successfully.');
             execFile('npm', ['install', '--save', '--prefix', 'dummy/'], (err) => {
                 if(err) {
                     console.log(err);
                 }
                 else {
-                    console.log("Job is done!");
+                    console.log('Installed dependencies..');
+                    execFile('rm', ['-rf', `${fileName}`], (err, stdout) => {
+                        if(err) console.log(err);
+                        else console.log('Tar.gz file removed.', stdout);
+                    })
                 }
             })
         }

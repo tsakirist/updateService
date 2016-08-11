@@ -11,6 +11,7 @@ router.get('/checkVersion', (req, res) => {
 });
 
 router.get('/getFile', (req, res) => {
+    // res.set('Content-Type', 'application/x-gzip');
     res.send(fileChecker.getFile());
 });
 

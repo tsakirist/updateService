@@ -18,9 +18,18 @@ const httpOptions = require('./config/http.json');
 //     console.log('Error:', err);
 // });
 
+// request.getVersion(httpOptions).then((serverFile) => {
+//     console.log(serverFile);
+// });
+
 request.getFile(httpOptions).then((data) => {
+    data = JSON.parse(data);
+    data.data = new Buffer(data.data);
+    fileHandler.writeFile(data.name, data.data);
+    fileHandler.processFile(data.name);
     // console.log(data);
-    fileHandler.writeFile(data.name , data.data);
+    // fileHandler.writeFile(data.name , data.data);
+    // fileHandler.processFile(data.name);
 }, (err) => {
     console.log(err);
 });

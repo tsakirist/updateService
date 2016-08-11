@@ -14,12 +14,14 @@ function httpGet(options) {
                 reject('Error has occurred ' + res.statusCode);
             }
             res.setEncoding('utf8');
-            const data = [];
+            let data = {};
             res.on('data', (chunk) => {
-                data.push(chunk);
+                // data.push(chunk);
+                data = chunk;
             });
             res.on('end', () => {
-                resolve(JSON.parse(data.join('')));
+                // resolve(data.join(''));
+                resolve(data);
             });
         }).end();
     });

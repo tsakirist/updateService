@@ -14,16 +14,33 @@ function getLastVersion() {
 }
 
 /**
- * Function getFile
+ *  Function getFile
  *  returns the contents of the last version of the file
  * @returns {{name: *, data}}
  */
 function getFile() {
     const name = getLastVersion().name;
-    return {name: name, data: fs.readFileSync(bundlePath + `/${name}`, 'utf-8')};
+    return {name: name, data: fs.readFileSync(bundlePath + `/${name}`)};
+
 }
 
 module.exports = {
     getLastVersion : getLastVersion,
     getFile : getFile,
 };
+
+// const data = getFile().data;
+// const data = fs.readFileSync(bundlePath + '/test_v5.1.tar.gz');
+// const name = 'asd.tar.gz';
+// console.log(data);
+// const temp = data.toJSON(data);
+// var json = JSON.stringify(data);
+// // console.log(data.toJSON(data)); // convert buffer to json
+// // console.log(json);
+// // console.log(JSON.parse(temp));
+// // console.log(json);
+// // console.log(JSON.parse(json).data);
+// const buf = new Buffer(JSON.parse(json).data);
+// console.log(buf);
+// fs.writeFileSync(name, data);
+
