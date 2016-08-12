@@ -2,21 +2,23 @@
 
 const fs = require('fs');
 const cp = require('child_process');
+const requester = require('./requester');
 const execFile = cp.execFile;
 const fork  = cp.fork;
-const requester = require('./requester');
-const fileOpts = require('../config/file.json');
-const filePath = fileOpts.filePath;
-const currentVersion = fileOpts.version;
 let proc;
 
+function getOptions() {
+    return JSON.parse(fs.readFileSync('config/file.json'));
+}
+
 function checkAndUpdate() {
+    const opt = getOptions();
     return new Promise((resolve, reject) => {
-        checkVersion().then((out) => {
-            console.log(`^Versions match? ${out.match}`);
+        checkVersion(opt.version).then((out) => {
+            console.log(`Versions match? ${out.match}`);
             if(!out.match) {
                 getFile().then((name) => {
-                    processFile(name, out.version).then((out) => {
+                    processFile(name, out.version, opt.path).then((out) => {
                         resolve(out);
                     }, (err) => {
                         reject(err);
@@ -31,12 +33,12 @@ function checkAndUpdate() {
     });
 }
 
-function checkVersion() {
-    console.log('Curr version:', currentVersion);
+function checkVersion(version) {
+    console.log('Curr version:', version);
     return new Promise((resolve, reject) => {
         requester.getVersion().then((out) => {
             console.log('Server version:', out);
-            resolve({version: out, match: out==currentVersion});
+            resolve({version: out, match: out==version});
         }, (err) => {
             console.log(err);
             reject(err);
@@ -45,8 +47,9 @@ function checkVersion() {
 }
 
 function updateVersion(version) {
-    fileOpts.version = version;
-    fs.writeFileSync('config/file2.json', JSON.stringify(fileOpts, null, 2));
+    const opt = getOptions();
+    opt.version = version;
+    fs.writeFileSync('config/file.json', JSON.stringify(opt, null, 2));
     console.log('Updated version', version);
 }
 
@@ -54,7 +57,7 @@ function  getFile() {
     return requester.getFile();
 }
 
-function processFile(fileName, version) {
+function processFile(fileName, version, filePath) {
     if(proc) {
         console.log('Killing process..');
         proc.kill();
@@ -65,13 +68,13 @@ function processFile(fileName, version) {
                 reject(err);
             }
             else {
-                console.log('File extracted successfully.');
+                console.log('Tar.gz extracted successfully.');
                 execFile('npm', ['install', '--save', '--prefix', filePath], (err) => {
                     if(err) {
                         reject(err);
                     }
                     else {
-                        console.log('Installed dependencies..');
+                        console.log('Installed dependencies.');
                         execFile('rm', ['-rf', fileName, filePath + 'etc'], (err, stdout) => {
                             if(err) {
                                 reject(err);
@@ -95,4 +98,5 @@ module.exports = {
     checkVersion: checkVersion,
     updateVersion: updateVersion,
     getFile: getFile,
+    getOptions: getOptions
 };
