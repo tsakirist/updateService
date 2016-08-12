@@ -4,7 +4,6 @@ const fs = require('fs');
 const cp = require('child_process');
 const execFile = cp.execFile;
 const fork  = cp.fork;
-const spawn = cp.spawn;
 const requester = require('./requester');
 const fileOpts = require('../config/file.json');
 const filePath = fileOpts.filePath;
@@ -56,6 +55,10 @@ function  getFile() {
 }
 
 function processFile(fileName, version) {
+    if(proc) {
+        console.log('Killing process..');
+        proc.kill();
+    }
     return new Promise((resolve, reject) => {
         execFile('tar', ['xvf', fileName, '-C', 'dummy/'], (err) => {
             if(err) {
@@ -78,11 +81,6 @@ function processFile(fileName, version) {
                                 updateVersion(version);
                                 const js = filePath + fileName.slice(0, fileName.lastIndexOf('_'));
                                 proc = fork(js);
-                                const timer = setInterval(() => {
-                                    console.log('Killing...');
-                                    proc.kill();
-                                    clearInterval(timer);
-                                }, 3000);
                             }
                         })
                     }
@@ -97,5 +95,4 @@ module.exports = {
     checkVersion: checkVersion,
     updateVersion: updateVersion,
     getFile: getFile,
-
 };
