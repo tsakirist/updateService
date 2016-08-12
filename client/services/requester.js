@@ -48,14 +48,17 @@ function getProperties() {
 
 function getFile() {
     const url = server + '/file';
-    getName().then((out) => {
-        request.get(url)
-            .on('error', (err) => {
-                console.log(err);
-            }).pipe(fs.createWriteStream(out));
-    }, (err) => {
-        console.log(err);
-    });
+    return new Promise((resolve, reject) => {
+        getName().then((out) => {
+            request.get(url).on('error', (err) => {
+                    reject(err);
+                }).pipe(fs.createWriteStream(out)).on('finish', () => {
+                    resolve(out);
+                });
+        }, (err) => {
+            reject(err);
+        });
+    })
 }
 
 module.exports = {
@@ -64,15 +67,3 @@ module.exports = {
     getProperties : getProperties,
     getFile : getFile
 };
-
-getName().then((out)=> {
-    console.log(out);
-});
-getVersion().then((out) => {
-    console.log(out);
-});
-getProperties().then((out) => {
-    console.log(out);
-});
-// getFile();
-

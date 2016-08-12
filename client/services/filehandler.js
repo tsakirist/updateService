@@ -1,84 +1,91 @@
 'use strict';
 
+const fs = require('fs');
 const execFile = require('child_process').execFile;
+const requester = require('./requester');
+const fileOpts = require('../config/file.json');
+const filePath = fileOpts.filePath;
+const currentVersion = fileOpts.version;
 
+function checkAndUpdate() {
+    return new Promise((resolve, reject) => {
+        checkVersion().then((out) => {
+            console.log(`^Versions match? ${out.match}`);
+            if(!out.match) {
+                getFile().then((name) => {
+                    processFile(name, out.version).then((out) => {
+                        resolve(out);
+                    }, (err) => {
+                        reject(err);
+                    });
+                }, (err) => {
+                    reject(err);
+                })
+            }
+        }, (err) => {
+            reject(err);
+        })
+    });
+}
 
+function checkVersion() {
+    console.log('Curr version:', currentVersion);
+    return new Promise((resolve, reject) => {
+        requester.getVersion().then((out) => {
+            console.log('Server version:', out);
+            resolve({version: out, match: out==currentVersion});
+        }, (err) => {
+            console.log(err);
+            reject(err);
+        });
+    })
+}
 
+function updateVersion(version) {
+    fileOpts.version = version;
+    fs.writeFileSync('config/file.json', JSON.stringify(fileOpts, null, 2));
+    console.log('Updated version', version);
+}
 
+function  getFile() {
+    return requester.getFile();
+}
 
+function processFile(fileName, version) {
+    return new Promise((resolve, reject) => {
+        execFile('tar', ['xvf', fileName, '-C', 'dummy/'], (err) => {
+            if(err) {
+                reject(err);
+            }
+            else {
+                console.log('File extracted successfully.');
+                execFile('npm', ['install', '--save', '--prefix', filePath], (err) => {
+                    if(err) {
+                        reject(err);
+                    }
+                    else {
+                        console.log('Installed dependencies..');
+                        execFile('rm', ['-rf', fileName, filePath + 'etc'], (err, stdout) => {
+                            if(err) {
+                                reject(err);
+                            }
+                            else {
+                                console.log('Tar.gz file removed.', stdout);
+                                updateVersion(version);
+                                resolve('Procedure is done.');
+                            }
+                        })
+                    }
+                })
+            }
+        });
+    });
+}
 
+module.exports = {
+    checkAndUpdate: checkAndUpdate,
+    checkVersion: checkVersion,
+    updateVersion: updateVersion,
+    getFile: getFile,
 
-
-
-
-
-
-
-// 'use strict';
-//
-// const execFile = require('child_process').execFile;
-// const fs = require('fs');
-// const path = require('path');
-// const fileOptions = require('../config/file.json');
-//
-// /** Function checkVersion
-//  *  compares the versions of the file
-//  *  @param serverVersion
-//  *  @returns {boolean}
-//  */
-// function checkVersion(serverVersion) {
-//     console.log('Inside filehandler..');
-//     console.log('Current version:', fileOptions.version);
-//     console.log('Server version:', serverVersion);
-//     if(fileOptions.version != serverVersion) {
-//         // updateVersion(serverVersion);
-//         return false;
-//     }
-//     return true;
-// }
-//
-// function writeFile(name , data) {
-//     console.log(name);
-//     fs.writeFileSync(name, data);
-// }
-//
-// //TODO need to update http.json with new version , and also write contents of new file untar execute..
-//
-// /** Function updateVersion
-//  *  updates the config/file.json with the newer version of the file
-//  *  @param version
-//  */
-// function updateVersion(version) {
-//     console.log('Updating file.json version to', version);
-//     fileOptions.version = version;
-//     fs.writeFileSync('config/config2.json', JSON.stringify(fileOptions, null, 2));
-// }
-//
-// function processFile(fileName) {
-//     execFile('tar', ['xvf', `${fileName}`, '-C', 'dummy/'], (err) => {
-//         if(err) {
-//             console.log(err);
-//         }
-//         else {
-//             console.log('File extracted successfully.');
-//             execFile('npm', ['install', '--save', '--prefix', 'dummy/'], (err) => {
-//                 if(err) {
-//                     console.log(err);
-//                 }
-//                 else {
-//                     console.log('Installed dependencies..');
-//                     execFile('rm', ['-rf', `${fileName}`], (err, stdout) => {
-//                         if(err) console.log(err);
-//                         else console.log('Tar.gz file removed.', stdout);
-//                     })
-//                 }
-//             })
-//         }
-//     });
-// }
-//
-// module.exports = {
-//     checkVersion : checkVersion,
-//     processFile : processFile,
-//     writeFile : writeFile
-// };
+};
