@@ -2,10 +2,12 @@
 
 const request = require('request');
 const fs = require('fs');
+const server = require('../config/http.json').server;
 
 function getVersion() {
+    const url = server + '/version';
     return new Promise((resolve, reject) => {
-        request.get('http://localhost:3000/version', (err, res, body) => {
+        request.get(url, (err, res, body) => {
             if(!err && res.statusCode == 200) {
                 resolve(body);
             }
@@ -17,8 +19,9 @@ function getVersion() {
 }
 
 function getName() {
+    const url = server + '/name';
     return new Promise((resolve, reject) => {
-        request.get('http://localhost:3000/name', (err, res, body) => {
+        request.get(url, (err, res, body) => {
             if(!err && res.statusCode == 200) {
                 resolve(body);
             }
@@ -30,8 +33,9 @@ function getName() {
 }
 
 function getProperties() {
+    const url = server + '/properties';
     return new Promise((resolve, reject) => {
-        request.get('http://localhost:3000/properties', (err, res, body) => {
+        request.get(url, (err, res, body) => {
             if(!err && res.statusCode == 200) {
                 resolve(body);
             }
@@ -43,8 +47,9 @@ function getProperties() {
 }
 
 function getFile() {
+    const url = server + '/file';
     getName().then((out) => {
-        request.get('http://localhost:3000/file')
+        request.get(url)
             .on('error', (err) => {
                 console.log(err);
             }).pipe(fs.createWriteStream(out));
@@ -60,14 +65,14 @@ module.exports = {
     getFile : getFile
 };
 
-// getName().then((out)=> {
-//     console.log(out);
-// });
-// getVersion().then((out) => {
-//     console.log(out);
-// });
-// getProperties().then((out) => {
-//     console.log(out);
-// });
+getName().then((out)=> {
+    console.log(out);
+});
+getVersion().then((out) => {
+    console.log(out);
+});
+getProperties().then((out) => {
+    console.log(out);
+});
 // getFile();
 
