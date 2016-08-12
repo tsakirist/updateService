@@ -1,11 +1,15 @@
 'use strict';
 
 const fs = require('fs');
-const execFile = require('child_process').execFile;
+const cp = require('child_process');
+const execFile = cp.execFile;
+const fork  = cp.fork;
+const spawn = cp.spawn;
 const requester = require('./requester');
 const fileOpts = require('../config/file.json');
 const filePath = fileOpts.filePath;
 const currentVersion = fileOpts.version;
+let proc;
 
 function checkAndUpdate() {
     return new Promise((resolve, reject) => {
@@ -43,7 +47,7 @@ function checkVersion() {
 
 function updateVersion(version) {
     fileOpts.version = version;
-    fs.writeFileSync('config/file.json', JSON.stringify(fileOpts, null, 2));
+    fs.writeFileSync('config/file2.json', JSON.stringify(fileOpts, null, 2));
     console.log('Updated version', version);
 }
 
@@ -72,7 +76,13 @@ function processFile(fileName, version) {
                             else {
                                 console.log('Tar.gz file removed.', stdout);
                                 updateVersion(version);
-                                resolve('Procedure is done.');
+                                const js = filePath + fileName.slice(0, fileName.lastIndexOf('_'));
+                                proc = fork(js);
+                                const timer = setInterval(() => {
+                                    console.log('Killing...');
+                                    proc.kill();
+                                    clearInterval(timer);
+                                }, 3000);
                             }
                         })
                     }
