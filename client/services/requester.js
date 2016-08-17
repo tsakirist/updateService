@@ -62,8 +62,8 @@ function getFile() {
 }
 
 module.exports = {
-    getVersion : getVersion,
-    getName : getName,
-    getProperties : getProperties,
-    getFile : getFile
+    getVersion,
+    getName,
+    getProperties,
+    getFile
 };
