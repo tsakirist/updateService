@@ -3,7 +3,8 @@
 const fs = require('fs');
 const cp = require('child_process');
 const requester = require('./requester');
-const execFile = cp.execFile;
+const Promise = require('bluebird');
+const execFile = Promise.promisify(cp.execFile);
 const fork  = cp.fork;
 let proc;
 
@@ -58,45 +59,35 @@ function  getFile() {
 }
 
 function processFile(fileName, version, filePath) {
-    if(proc) {
+    if (proc) {
         console.log('Killing process..');
         proc.kill();
     }
-    return new Promise((resolve, reject) => {
-        execFile('tar', ['xvf', fileName, '-C', 'dummy/'], (err) => {
-            if(err) {
-                reject(err);
-            }
-            else {
-                console.log('Tar.gz extracted successfully.');
-                execFile('npm', ['install', '--save', '--prefix', filePath], (err) => {
-                    if(err) {
-                        reject(err);
-                    }
-                    else {
-                        console.log('Installed dependencies.');
-                        execFile('rm', ['-rf', fileName, filePath + 'etc'], (err, stdout) => {
-                            if(err) {
-                                reject(err);
-                            }
-                            else {
-                                console.log('Tar.gz file removed.', stdout);
-                                updateVersion(version);
-                                const js = filePath + fileName.slice(0, fileName.lastIndexOf('_'));
-                                proc = fork(js);
-                            }
-                        })
-                    }
-                })
-            }
-        });
-    });
+    return execFile('tar', ['xvf', fileName, '-C', 'dummy/'])
+        .then(() => {
+            console.log('Tar.gz extracted successfully.');
+            return execFile('npm', ['install', '--save', '--prefix', filePath]);
+        })
+        .then(() => {
+            console.log('Installed dependencies.');
+            return execFile('rm', ['-rf', fileName, filePath + 'etc']);
+        })
+        .then((stdout) => {
+            console.log('Tar.gz file removed.', stdout);
+            updateVersion(version);
+            const js = filePath + fileName.slice(0, fileName.lastIndexOf('_'));
+            proc = fork(js);
+            return version;
+        })
+        .catch(err => {
+            console.log('Inside filehandler', err);
+        })
 }
 
 module.exports = {
-    checkAndUpdate: checkAndUpdate,
-    checkVersion: checkVersion,
-    updateVersion: updateVersion,
-    getFile: getFile,
-    getOptions: getOptions
+    checkAndUpdate,
+    checkVersion,
+    updateVersion,
+    getFile,
+    getOptions
 };
