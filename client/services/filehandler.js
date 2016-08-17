@@ -66,7 +66,7 @@ function processFile(fileName, version, filePath) {
     return execFile('tar', ['xvf', fileName, '-C', 'dummy/'])
         .then(() => {
             console.log('Tar.gz extracted successfully.');
-            return execFile('npm', ['install', '--save', '--prefix', filePath]);
+            return execFile('npm', ['install', '--prefix', filePath]);
         })
         .then(() => {
             console.log('Installed dependencies.');
