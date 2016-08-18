@@ -3,13 +3,15 @@
 const fs = require('fs');
 const cp = require('child_process');
 const requester = require('./requester');
-const Promise = require('bluebird');
-const execFile = Promise.promisify(cp.execFile);
+const promise = require('bluebird');
+const execFile = promise.promisify(cp.execFile);
 const fork  = cp.fork;
+const path = require('path');
 let proc;
 
 function getOptions() {
-    return JSON.parse(fs.readFileSync('config/file.json'));
+    // const ob  = (JSON.parse(fs.readFileSync(path.resolve(__dirname + '/../config/file.json'))));
+    return JSON.parse(fs.readFileSync(path.resolve(__dirname + '/../config/file.json')));
 }
 
 function checkAndUpdate() {

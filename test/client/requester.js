@@ -3,7 +3,7 @@ const requester = require('../../client/services/requester');
 
 // Mocha has built-in support for promises , so we can omit done() callback with a return
 
-describe('Client Requester Functions', () => {
+describe('Client requester functions', () => {
 
     describe('getVersion()', () => {
 
@@ -49,7 +49,7 @@ describe('Client Requester Functions', () => {
 
         it('resolved promise should contain json with 2 fields {name, version}', () => {
             return prom.then((out) => {
-                expect(JSON.parse(out)).to.have.all.keys("name", "version");
+                expect(JSON.parse(out)).to.have.all.keys('name', 'version');
             })
         })
     });
@@ -68,13 +68,6 @@ describe('Client Requester Functions', () => {
                 expect(out).to.be.a('string');
             })
         });
-
-        after(() => {
-            const exec = require('child_process').exec;
-            exec('rm *.gz', (err) => {
-                if(err) console.log(err);
-            });
-        })
     });
 
 });
