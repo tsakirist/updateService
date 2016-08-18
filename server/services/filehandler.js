@@ -15,6 +15,6 @@ function getFilePath() {
 }
 
 module.exports = {
-    getLastProperties : getLastProperties,
-    getFilePath : getFilePath
+    getLastProperties,
+    getFilePath
 };
